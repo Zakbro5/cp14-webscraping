@@ -34,13 +34,26 @@ and alternative ways to do things, but to keep it simple we'll focus on these.
 # all the necessary data
 page_url = 'https://books.toscrape.com/catalogue/aladdin-and-his-wonderful-lamp_973/index.html'
 
+from playwright.sync_api import sync_playwright
 
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=False, slow_mo=1500)
+    context = browser.new_context()
+    page = context.new_page()
+
+    page.goto(page_url)
 
 # 2. GET CONTENT FROM THE PAGE: FIRST P
 # Using the page that you already navigated to, use .locator("p"). This will
 # find the location of all "p" elements in the page. Then use .nth(0) to get
 # the first occurence of a "p" element. Then use .text_content() and print out
 # the result to see what the first "p" element is.
+
+    all_p_elements = page.locator("p")
+    first_p_element = all_p_elements.nth(0)
+    text_of_first_p = first_p_element.text_content()
+    print(text_of_first_p)
+    print(all_p_elements.count())
 
 
 # 3. VIEW CONTENT FROM ALL P ELEMENTS
@@ -49,13 +62,21 @@ page_url = 'https://books.toscrape.com/catalogue/aladdin-and-his-wonderful-lamp_
 # a for loop with the .count() in a range to loop through each p element and
 # print out the text in each. Put an extra space between each as you print it.
 
+    clear_screen()
+    all_p_elements = page.locator('p')
+    number_of_p_elements = all_p_elements.count()
+    for index in range(number_of_p_elements):
+        print(all_p_elements.nth(index).text_content())
+        print()
 
 
 # 4. FIND A SPECIFIC ELEMENT
 # Let's say we want to grab the div that has the attribute of
 # "product_description". We can use locator, but combine it with some extra
 # instructions, like: .locator("div[id='product_description]")
-
+    clear_screen()
+    specific_div = page.locator("div[id='product_description']")
+    print(specific_div.text_content())
 
 # 5. FIND ELEMENTS NESTED IN OTHER ELEMENTS
 # Let's say you want to find the the UPC id for the book. You might notice that
